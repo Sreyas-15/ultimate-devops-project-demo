@@ -5,6 +5,7 @@ selected product.
 
 # Upgrade the pip and then install all the project dependencies
 pip install --upgrade pip
+
 pip install -r requirements.txt
 
 # To run the python file
