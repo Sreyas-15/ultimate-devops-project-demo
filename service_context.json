@@ -1,0 +1,22 @@
+{
+    "accounting":      "root",
+    "ad":              "local",
+    "cart":            "root",
+    "checkout":        "root",
+    "currency":        "root",
+    "email":           "root",
+    "flagd-ui":        "root",
+    "fraud-detection": "root",
+    "frontend":        "root",
+    "frontend-proxy":  "root",
+    "image-provider":  "root",
+    "kafka":           "local",
+    "load-generator":  "root",
+    "opensearch":      "local",
+    "payment":         "root",
+    "postgres":        "root",
+    "product-catalog": "local",
+    "quote":           "root",
+    "recommendation":  "local",
+    "shipping":        "root"
+}

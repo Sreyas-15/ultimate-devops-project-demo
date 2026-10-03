@@ -8,7 +8,7 @@
 #include <grpc/health/v1/health.grpc.pb.h>
 
 #include "opentelemetry/trace/context.h"
-#include "opentelemetry/trace/semantic_conventions.h"
+//#include "opentelemetry/trace/semantic_conventions.h"
 #include "opentelemetry/trace/span_context_kv_iterable_view.h"
 #include "opentelemetry/baggage/baggage.h"
 #include "opentelemetry/nostd/string_view.h"

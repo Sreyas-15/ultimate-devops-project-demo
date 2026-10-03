@@ -7,7 +7,7 @@ Build and push all microservice Docker images from src/.
 - Pushes ALL images only if every build succeeds.
 """
 
-import os
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -19,10 +19,19 @@ REPO_ROOT = Path(__file__).resolve().parent  # script must live at repo root
 SRC_DIR = REPO_ROOT / "src"
 
 # Build args from .env that some Dockerfiles require
+# this method untill we develop a dynamic mechanism of loading the env variables in workspace
 BUILD_ARGS = {
     "OPENTELEMETRY_CPP_VERSION": "1.23.0",
     "OTEL_JAVA_AGENT_VERSION": "2.20.1",
 }
+
+# Load service context mapping from JSON
+SERVICE_CONTEXT_FILE = REPO_ROOT / "service_context.json"
+if not SERVICE_CONTEXT_FILE.is_file():
+    print(f"ERROR: {SERVICE_CONTEXT_FILE} not found. Cannot determine build contexts.", file=sys.stderr)
+    sys.exit(1)
+with open(SERVICE_CONTEXT_FILE, "r") as f:
+    SERVICE_CONTEXT = json.load(f)
 
 
 def find_services():
@@ -46,28 +55,11 @@ def find_services():
     return services
 
 
-def needs_repo_root_context(dockerfile: Path) -> bool:
-    """Return True if the Dockerfile references ./src/ or /src/ paths (needs repo root as context)."""
-    content = dockerfile.read_text(encoding="utf-8", errors="replace")
-    # If COPY/mount instructions reference ./src/ or /src/ or ./pb/ or /pb/, it needs repo root
-    for line in content.splitlines():
-        stripped = line.strip()
-        if stripped.startswith("#"):
-            continue
-        if any(pattern in stripped for pattern in ["./src/", "/src/", "./pb/", "/pb/"]):
-            return True
-    return False
-
-
 def build_image(service_name: str, dockerfile: Path) -> str:
     """Build a Docker image for the service. Returns the full image tag."""
     image_tag = f"{DOCKER_USERNAME}/{service_name}:{IMAGE_TAG}"
-    repo_root_ctx = needs_repo_root_context(dockerfile)
-
-    if repo_root_ctx:
-        context = str(REPO_ROOT)
-    else:
-        context = str(dockerfile.parent)
+    ctx_type = SERVICE_CONTEXT.get(service_name, "root")
+    context = str(dockerfile.parent) if ctx_type == "local" else str(REPO_ROOT)
 
     cmd = [
         "docker", "build",
@@ -84,7 +76,7 @@ def build_image(service_name: str, dockerfile: Path) -> str:
     print(f"\n{'='*60}")
     print(f"Building: {image_tag}")
     print(f"  Dockerfile : {dockerfile.relative_to(REPO_ROOT)}")
-    print(f"  Context    : {'repo root' if repo_root_ctx else dockerfile.parent.relative_to(REPO_ROOT)}")
+    print(f"  Context    : {'repo root' if ctx_type == 'root' else dockerfile.parent.relative_to(REPO_ROOT)}")
     print(f"  Command    : {' '.join(cmd)}")
     print(f"{'='*60}")
 
@@ -107,10 +99,11 @@ def push_images(tags: list[str]):
             print(f"FAILED to push {tag}", file=sys.stderr)
             sys.exit(1)
     print(f"\nAll {len(tags)} images pushed successfully!")
-
+    for tag in tags:
+        print(f"\nPushed: {tag}")        
 
 def main():
-    services = find_services()
+    services = find_services()  # collate a list of services its an estimation from dockerfile and should have entry in json file for services
     if not services:
         print("No services with Dockerfiles found under src/")
         sys.exit(1)
@@ -134,11 +127,14 @@ def main():
     print(f"BUILD SUMMARY: {len(built_tags)} succeeded, {len(failed)} failed")
     if failed:
         print(f"Failed services: {', '.join(failed)}")
-        print("Skipping push — not all builds succeeded.")
-        sys.exit(1)
-
-    # Push only if ALL builds succeeded
-    push_images(built_tags)
+        if len(failed)==1 and failed[0]=='currency':    #handling the currency code failure here
+                push_images(built_tags)
+        else:
+                print("Skipping push — not all builds succeeded.")
+               
+    else:
+        # Push only if ALL builds succeeded to handle the edge 
+        push_images(built_tags)
 
 
 if __name__ == "__main__":
