@@ -47,10 +47,10 @@ spec:
               value: 'opentelemetry-demo-frontend'
             - name: FRONTEND_PORT
               value: "8080"
-            - name: GRAFANA_SERVICE_HOST
-              value: 'opentelemetry-demo-grafana'
-            - name: GRAFANA_SERVICE_PORT
-              value: "80"
+            # - name: GRAFANA_HOST
+            #   value: 'opentelemetry-demo-grafana'
+            # - name: GRAFANA_PORT
+            #   value: "80"
             - name: IMAGE_PROVIDER_HOST
               value: 'opentelemetry-demo-imageprovider'
             - name: IMAGE_PROVIDER_PORT

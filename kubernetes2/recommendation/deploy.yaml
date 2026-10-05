@@ -33,9 +33,9 @@ spec:
               value: 'opentelemetry-demo-otelcol'
             - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
               value: cumulative
-            - name: RECOMMENDATION_SERVICE_PORT
+            - name: RECOMMENDATION_PORT
               value: "8080"
-            - name: PRODUCT_CATALOG_SERVICE_ADDR
+            - name: PRODUCT_CATALOG_ADDR
               value: 'opentelemetry-demo-productcatalogservice:8080'
             - name: OTEL_PYTHON_LOG_CORRELATION
               value: "true"
