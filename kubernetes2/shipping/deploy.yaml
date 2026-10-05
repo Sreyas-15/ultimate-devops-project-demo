@@ -33,7 +33,7 @@ spec:
               value: 'opentelemetry-demo-otelcol'
             - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
               value: cumulative
-            - name: SHIPPING_SERVICE_PORT
+            - name: SHIPPING_PORT
               value: "8080"
             - name: QUOTE_SERVICE_ADDR
               value: http://opentelemetry-demo-quoteservice:8080
