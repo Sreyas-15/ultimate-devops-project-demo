@@ -35,19 +35,19 @@ spec:
               value: cumulative
             - name: CHECKOUT_SERVICE_PORT
               value: "8080"
-            - name: CART_SERVICE_ADDR
+            - name: CART_ADDR
               value: 'opentelemetry-demo-cartservice:8080'
-            - name: CURRENCY_SERVICE_ADDR
+            - name: CURRENCY_ADDR
               value: 'opentelemetry-demo-currencyservice:8080'
-            - name: EMAIL_SERVICE_ADDR
+            - name: EMAIL_ADDR
               value: http://opentelemetry-demo-emailservice:8080
-            - name: PAYMENT_SERVICE_ADDR
+            - name: PAYMENT_ADDR
               value: 'opentelemetry-demo-paymentservice:8080'
-            - name: PRODUCT_CATALOG_SERVICE_ADDR
+            - name: PRODUCT_CATALOG_ADDR
               value: 'opentelemetry-demo-productcatalogservice:8080'
-            - name: SHIPPING_SERVICE_ADDR
+            - name: SHIPPING_ADDR
               value: 'opentelemetry-demo-shippingservice:8080'
-            - name: KAFKA_SERVICE_ADDR
+            - name: KAFKA_ADDR
               value: 'opentelemetry-demo-kafka:9092'
             - name: FLAGD_HOST
               value: 'opentelemetry-demo-flagd'
@@ -57,6 +57,8 @@ spec:
               value: http://$(OTEL_COLLECTOR_NAME):4317
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.12.0
+            - name: CHECKOUT_PORT
+              value: "5050"
           resources:
             limits:
               memory: 20Mi
